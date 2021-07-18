@@ -1,0 +1,8 @@
+mkdir server
+cd server
+npm init
+npm install --save express
+cat package.json
+
+# Node: Javascript runtime used to execute code outside of the browser
+# 
