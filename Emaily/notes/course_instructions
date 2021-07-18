@@ -5,4 +5,21 @@ npm install --save express
 cat package.json
 
 # Node: Javascript runtime used to execute code outside of the browser
-# 
+# Express: Library that runs in the Node runtime. It has helpers to make dealing with HTTP traffic easier.
+
+# Start with a index.js file
+
+node index.js
+# then go to localhost:5000 on your browser
+
+# heroku.com
+# heroku deployment checklist 
+dynamic port binding (define PORT object)
+-> specify node env 
+    (add engines{node,npm to package.json}) 
+-> specify start script 
+    (instruct heroku what command to run to start server)
+    replace 'test' with 'start' in scripts in package.json
+-> create .gitignore file
+    (don't wanna include dependencies, heroku will do that for us)
+    add node_modules in the .gitignore
