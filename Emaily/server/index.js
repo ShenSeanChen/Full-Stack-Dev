@@ -9,7 +9,7 @@ const app = express();
 
 
 app.get('/', (req, res) => {
-    res.send({ hi: 'there'});
+    res.send({ bye: 'buddy'});
 });
 // create our first 'route handler' with express
 // app -> get method (get info); can also do the following
@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 // req:request; res:outgoing response
 // res.send({}):immediately send some JSON data back to whoever made the req
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4900;
 // heroku will inject environment variables
     // env vars are set in underlying runtime that node is running on top of 
 // The boolean || 5000
