@@ -1,25 +1,62 @@
+##########################################################################
+# Section 1: getting started 
+##########################################################################
 mkdir server
 cd server
 npm init
 npm install --save express
 cat package.json
 
+#####################################
 # Node: Javascript runtime used to execute code outside of the browser
 # Express: Library that runs in the Node runtime. It has helpers to make dealing with HTTP traffic easier.
 
+##########################################################################
+# Section 2: server side architecture
+##########################################################################
 # Start with a index.js file
 
 node index.js
 # then go to localhost:5000 on your browser
 
+#####################################
 # heroku.com
 # heroku deployment checklist 
-dynamic port binding (define PORT object)
+-> dynamic port binding 
+    (define PORT object)
 -> specify node env 
     (add engines{node,npm to package.json}) 
 -> specify start script 
     (instruct heroku what command to run to start server)
     replace 'test' with 'start' in scripts in package.json
+    ("test": "echo \"Error: no test specified\" && exit 1")
 -> create .gitignore file
     (don't wanna include dependencies, heroku will do that for us)
     add node_modules in the .gitignore
+
+#####################################
+# First time deploy of heroku 
+-> create heroku account
+-> commit our code base to git
+    # direct to your folder
+    git init
+    git commit -m "initial commit"
+-> install heroku CLI and create app
+    # search heroku cli and download 
+    heroku login
+    heroku create -> second link is our deployment target (git repo we can push our local server to)
+    git remote add heroku https://git.heroku.com/enigmatic-reaches-89156.git
+    git push heroku master
+    heroku logs # to debug
+    heroku open
+-> deploy app with git
+-> heroku deploys project
+
+#####################################
+# Second time deploy of heroku
+-> commit codebase with git
+-> deploy app with git
+
+##########################################################################
+# Section 3: Authentication with Google OAuth
+#####################################
