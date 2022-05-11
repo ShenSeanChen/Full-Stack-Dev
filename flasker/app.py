@@ -18,17 +18,18 @@ app.config['SECRET_KEY'] = "My super secret key that no one is supposed to know 
 #################################
 
 # # New MySQL DB
-# # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql:///root:password123@localhost/our_users'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql:///root:password123@localhost/our_users'
-# # app.config['MYSQL_HOST'] = "localhost"
-# app.config['MYSQL_USER'] = "root"
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql:///root:password123@localhost/our_users'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql:///root:password123@localhost/our_users'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
 # # app.config['MYSQL_USER'] = "shenseanchen"
-# # app.config['MYSQL_PASSWORD'] = "password123"
+app.config['MYSQL_PASSWORD'] = 'password123'
+# app.config['MYSQL_DB'] = "MySQL-Sean"
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # /
 # Old SQLite DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 # /
 # Initialize the database
