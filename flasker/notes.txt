@@ -1,0 +1,70 @@
+## terminal: 
+export FLASK_ENV=development
+export FLASK_APP=hello_flask_codemy.py
+flask run
+## go to browser:
+localhost:5000
+
+## activate the virtenv
+source codemy/bin/activate
+
+## ssh key:
+cd ~/
+mkdir .ssh
+cd .ssh
+pwd
+ssh-keygen -t rsa -- this generates ssh key on mac
+ls
+cat id_rsa.pub -- this returns our ssh key
+```
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDsLbPX545qbuZ1nJYFhW7Aa3ihRn1+c2nkxfoSKY74SSxVQqGx+G0zBKlt/YDnJw0YRQYtBdezgB+xw/h6msl5Zq8S+Vlu0GswTYmLZ5yyy1jkEqQXeBOu+ielBLpGisnm+TnUuMowV6WtrkpYAAfo2PM3l03yfZKRzDotel18l3Zs1mOYrFhlnbUSC/jkZg7jtL6daP/+CRJiOOQVLl6ASvbSDvD1utH7GGSdeW3+mU5GTa7O8pNsgoFn1XFFmTByLXR17OvbWsfSo3Gu7h++qjv0cFrgPvbC90v2IpumBZGaKksri2YG1NlpRGG2/ZrrlmxjEycaXlpriT3Nwq5S2ZftUgH7Yoj+tencRI+95uEcXP7Ct421XXcLTWaK4U4ePc4ySDO9/86rJB4QwXsYanM4+XUYlk20nRoX42SRdtmlNlvFNNUIRpPWQ0uavGaePaqb8QiG4vifX55QeKyEupP8gk/gi/obpSVoVmF9soKUWeQeA/TrpAfX+wFBVKk= shenseanchen@shenseanchen-macbookpro.roam.corp.google.com
+```
+
+## Templates, Bootstrap Navbars, and Links
+getbootstrap.com -> docs -> Starter template
+
+## Database: SQLAlchemy
+pip install flask-sqlalchemy
+python
+from hello_flask_codemy import db
+db.create_all()
+exit() ## then you can find a users.db file in your directory
+
+## Set up MySQL DB -> install the connector
+pip install mysql-connector
+pip install mysql-connector-python
+pip install mysql-connector-python-rf
+
+## create db
+python create_db.py
+
+## execute MySQL
+pip install cryptography
+pip install pymysql
+python 
+from hello_flask_codemy import db
+db.create_all()
+
+## activate mysql in command line (terminal)
+/usr/local/mysql/bin/mysql -u root -p
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password123';
+## to exit
+\q
+
+UPDATE mysql. user SET User='shenseanchen' WHERE Host='localhost' AND User='root';
+
+## Dashboard
+pip install streamlit
+streamlit hello
+
+
+
+
+
+
+
+
+
+
+
+
