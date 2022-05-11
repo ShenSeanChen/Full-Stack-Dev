@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<h1>Hello world from flask codemy!</h1>
+
+	<p>This is my first flask page with Codemy!!</p>
+
+
+	<p>My name is {{first_name}}</p>
+	<p>{{stuff2|title}}, with title filter which capitalizes all words </p>
+	
+	<p>{{stuff}}, with no filter</p>
+	<p>{{stuff|safe}}, with a safe filter</p>
+	<p>{{stuff|striptags}}, with a striptags filter</p>
+
+	<h3>Favourite Pizza: </h3>
+	<p>{{favourite_pizza}}</p>
+	{% for topping in favourite_pizza %}
+		{% if topping == 'MeatLovers' %}
+			{{'Wow you love Meat!!!!!!'}}<br/>
+		{% elif topping == 101 %}
+			{{topping + 101}}<br/>
+		{% else %}
+			{{topping}}<br/>
+		{% endif%}
+	{%endfor%}
+
+	<br/><br/>
+	{{'And you can also print by list_name.index'}}
+	<br/>
+	{{favourite_pizza.0}}
+	{{favourite_pizza.3 + 101}}
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
