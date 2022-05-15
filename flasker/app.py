@@ -1,8 +1,10 @@
-from flask import Flask, render_template, flash
-from flask_wtf import FlaskForm 
+from flask import Flask, render_template, flash, request
+from flask_wtf import FlaskForm
+from numpy import record 
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from datetime import datetime
 
 #################################
@@ -19,28 +21,31 @@ app.config['SECRET_KEY'] = "My super secret key that no one is supposed to know 
 
 # # New MySQL DB
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql:///root:password123@localhost/our_users'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql:///root:password123@localhost/our_users'
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-# # app.config['MYSQL_USER'] = "shenseanchen"
-app.config['MYSQL_PASSWORD'] = 'password123'
-# app.config['MYSQL_DB'] = "MySQL-Sean"
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql:///root:password123@localhost/our_users'
+# app.config['MYSQL_HOST'] = "localhost"
+# app.config['MYSQL_USER'] = "root"
+# # # app.config['MYSQL_USER'] = "shenseanchen"
+# # # app.config['MYSQL_PASSWORD'] = "password123"
+
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # /
 # Old SQLite DB
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 # /
 # Initialize the database
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # /
-# Create Model
+# Create Users DB class
 class Users(db.Model): #inherit db.Model
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(20), nullable=False) #string of 200 characters and don't want the names to be blank
 	email = db.Column(db.String(120), nullable=False, unique=True)
+	favorite_color = db.Column(db.String(120))
 	date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
 	# Create a string
@@ -56,6 +61,7 @@ class Users(db.Model): #inherit db.Model
 class UserForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired()])
 	email = StringField("Email", validators=[DataRequired()])
+	favorite_color = StringField("Favorite Color")
 	submit = SubmitField("Submit")
 
 # Create a Namer Form Class
@@ -138,19 +144,17 @@ def add_user():
 
 	# Validate Form
 	if form.validate_on_submit():
-
 		user = Users.query.filter_by(email=form.email.data).first()
 		if user is None:
-			user = Users(name=form.name.data, email=form.email.data)
+			user = Users(name=form.name.data, email=form.email.data, favorite_color=form.favorite_color.data)
 			db.session.add(user)
 			db.session.commit()
 
 		name = form.name.data
 		form.name.data = ''
 		form.email.data = ''
-
+		form.favorite_color.data = ''
 		flash("Your Form Was Submitted Successfully!")
-		
 	our_users = Users.query.order_by(Users.date_added)
 		
 	return render_template("add_user.html",
@@ -158,6 +162,34 @@ def add_user():
 		name=name,
 		Users=Users,
 		our_users=our_users)
+
+# /
+# Update Database record
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
+def update(id):
+	form = UserForm()
+	name_to_update = Users.query.get_or_404(id)
+	if request.method == "POST":
+		name_to_update.name = request.form['name']
+		name_to_update.email = request.form['email']
+		name_to_update.favorite_color = request.form['favorite_color']
+		try:
+			db.session.commit()
+			flash("User Updated Successfully!")
+			return render_template("update.html",
+									form=form,
+									name_to_update=name_to_update)
+		except:
+			flash("Error! Looks like there was problem... Sean recommends that you try again:)))!")
+			return render_template("update.html",
+									form=form,
+									name_to_update=name_to_update)
+	else:
+		return render_template("update.html",
+									form=form,
+									name_to_update=name_to_update)
+
+		
 
 
 
