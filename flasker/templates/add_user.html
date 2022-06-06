@@ -21,6 +21,7 @@
 			<td>Name</td>
 			<td>Email</td>
 			<td>Favorite Color</td>
+			<td>Delete</td>
 		</tr>
 		{% for our_user in our_users %}
 			<tr>
@@ -31,6 +32,9 @@
 				</td> 
 				<td>{{ our_user.email }}</td>
 				<td>{{ our_user.favorite_color }}</td>
+				<td>
+					<a href="{{url_for('delete', id=our_user.id)}}">Delete</a>
+				</td>
 			</tr>
 		{% endfor %}
 	</table>
@@ -55,6 +59,8 @@
 			{{ form.favorite_color(class="form-control") }}
 			<br/>
 			{{ form.submit(class="btn btn-secondary") }}
+			
+
 		</form>
 	</div>
 <br/>
@@ -67,6 +73,7 @@
 		<td>Name</td>
 		<td>Email</td>
 		<td>Favorite Color</td>
+		<td>Delete</td>
 	</tr>
 	{% for our_user in our_users %}
 		<tr>
@@ -77,6 +84,9 @@
 			</td> 
 			<td>{{ our_user.email }}</td>
 			<td>{{ our_user.favorite_color }}</td>
+			<td>
+				<a href="{{url_for('delete', id=our_user.id)}}">Delete</a>
+			</td>
 		</tr>
 	{% endfor %}
 </table>
@@ -84,27 +94,3 @@
 {% endif %}
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

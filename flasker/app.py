@@ -120,7 +120,6 @@ def user(input_name):
 # Create Name Page
 @app.route('/name', methods=['GET', 'POST'])
 # Everytime you have a form, you are either getting or posting that form
-
 def name():
 	name = None
 	form = NamerForm()
@@ -155,8 +154,8 @@ def add_user():
 		form.email.data = ''
 		form.favorite_color.data = ''
 		flash("Your Form Was Submitted Successfully!")
-	our_users = Users.query.order_by(Users.date_added)
-		
+	
+	our_users = Users.query.order_by(Users.date_added)	
 	return render_template("add_user.html",
 		form=form,
 		name=name,
@@ -187,12 +186,38 @@ def update(id):
 	else:
 		return render_template("update.html",
 									form=form,
-									name_to_update=name_to_update)
+									name_to_update=name_to_update,
+									id=id)
 
+
+# /
+# Delete Database records
+@app.route('/delete/<int:id>')
+def delete(id):
+	user_to_delete = Users.query.get_or_404(id)
+
+	name="Sean"
+	form=UserForm()
+
+	try:
+		db.session.delete(user_to_delete)
+		db.session.commit()
+		flash("User Deleted Success!!")
 		
+		our_users = Users.query.order_by(Users.date_added)	
+		return render_template("add_user.html",
+			form=form,
+			name=name,
+			Users=Users,
+			our_users=our_users)
 
-
-
+	except:
+		flash("Whoops! There was a problem deleting user, try again plzzzz......")
+		return render_template("add_user.html",
+			form=form,
+			name=name,
+			Users=Users,
+			our_users=our_users)
 
 
 
