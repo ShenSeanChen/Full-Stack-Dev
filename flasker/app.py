@@ -78,6 +78,8 @@ class UserForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired()])
 	email = StringField("Email", validators=[DataRequired()])
 	favorite_color = StringField("Favorite Color")
+	password_hash = PasswordField()
+	password_hash2 = PasswordField()
 	submit = SubmitField("Submit")
 
 # Create a Namer Form Class
