@@ -1,12 +1,13 @@
 from flask import Flask, render_template, flash, request
 from flask_wtf import FlaskForm
 from numpy import record 
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
+from wtforms.validators import DataRequired, EqualTo, Length
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 #################################
 # Create a Flask instance
@@ -78,8 +79,8 @@ class UserForm(FlaskForm):
 	name = StringField("Name", validators=[DataRequired()])
 	email = StringField("Email", validators=[DataRequired()])
 	favorite_color = StringField("Favorite Color")
-	password_hash = PasswordField()
-	password_hash2 = PasswordField()
+	password_hash = PasswordField('Password', validators=[DataRequired(), EqualTo('password_hash2', message='Passowrds Must Match!!!')])
+	password_hash2 = PasswordField('Confirm Password', validators=[DataRequired()])
 	submit = SubmitField("Submit")
 
 # Create a Namer Form Class
