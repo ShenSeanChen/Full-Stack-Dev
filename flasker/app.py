@@ -34,7 +34,10 @@ app.config['SECRET_KEY'] = "My super secret key that no one is supposed to know 
 
 # /
 # Old SQLite DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+
+# Heroku Postgre DB
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://rmfscvvneeiuws:6cd683477a2d3085aad99e4c65a3bad9319c00dce55d974b693898ee6cba5839@ec2-23-23-182-238.compute-1.amazonaws.com:5432/d871h2f5h0vkav'
 
 # /
 # Initialize the database
@@ -55,7 +58,7 @@ class Users(db.Model): #inherit db.Model
 
 	@property
 	def password(self):
-		raise AttributeError('password is not a readable attribute!')
+		raise AttributeError('Password is not a readable attribute!')
 
 	@password.setter
 	def password(self, password):
@@ -64,11 +67,11 @@ class Users(db.Model): #inherit db.Model
 	def verify_password(self, password):
 		return check_password_hash(self.password_hash, password)
 
-
 	# Create a string
 	def __repr__(self):
 		# return '<Name %r>' % self.name
 		return self.name
+
 
 #################################
 # Create FlaskForm Classes
@@ -164,7 +167,12 @@ def add_user():
 	if form.validate_on_submit():
 		user = Users.query.filter_by(email=form.email.data).first()
 		if user is None:
-			user = Users(name=form.name.data, email=form.email.data, favorite_color=form.favorite_color.data)
+			# Hash the password
+			hashed_pw = generate_password_hash(form.password_hash.data, "sha256")
+
+			# user = Users(name=form.name.data, email=form.email.data, favorite_color=form.favorite_color.data, password_hash=form.password_hash.data)
+			user = Users(name=form.name.data, email=form.email.data, favorite_color=form.favorite_color.data, password_hash=hashed_pw)
+			
 			db.session.add(user)
 			db.session.commit()
 

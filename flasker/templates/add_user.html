@@ -21,6 +21,7 @@
 			<td>Name</td>
 			<td>Email</td>
 			<td>Favorite Color</td>
+			<td>User Password</td>
 			<td>Delete</td>
 		</tr>
 		{% for our_user in our_users %}
@@ -32,6 +33,7 @@
 				</td> 
 				<td>{{ our_user.email }}</td>
 				<td>{{ our_user.favorite_color }}</td>
+				<td>{{ our_user.password_hash }}</td>
 				<td>
 					<a href="{{url_for('delete', id=our_user.id)}}">Delete</a>
 				</td>
@@ -82,6 +84,7 @@
 		<td>Name</td>
 		<td>Email</td>
 		<td>Favorite Color</td>
+		<td>Password</td>
 		<td>Delete</td>
 	</tr>
 	{% for our_user in our_users %}
@@ -93,6 +96,7 @@
 			</td> 
 			<td>{{ our_user.email }}</td>
 			<td>{{ our_user.favorite_color }}</td>
+			<td>{{ our_user.password_hash }}</td>
 			<td>
 				<a href="{{url_for('delete', id=our_user.id)}}">Delete</a>
 			</td>
