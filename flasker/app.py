@@ -1,12 +1,18 @@
 from flask import Flask, render_template, flash, request
+
 from flask_wtf import FlaskForm
-from numpy import record 
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
 from wtforms.validators import DataRequired, EqualTo, Length
+from wtforms.widgets import TextArea
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from datetime import datetime
+
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from datetime import datetime, date
+from numpy import record 
+
 
 #################################
 # Create a Flask instance
@@ -17,7 +23,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "My super secret key that no one is supposed to know except Sean."
 
 #################################
-# Configure database
+# Configure SQLAlchemy Database
 #################################
 
 # # New MySQL DB
@@ -33,18 +39,33 @@ app.config['SECRET_KEY'] = "My super secret key that no one is supposed to know 
 
 # /
 # Old SQLite DB
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 # Heroku Postgre DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://rmfscvvneeiuws:6cd683477a2d3085aad99e4c65a3bad9319c00dce55d974b693898ee6cba5839@ec2-23-23-182-238.compute-1.amazonaws.com:5432/d871h2f5h0vkav'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://rmfscvvneeiuws:6cd683477a2d3085aad99e4c65a3bad9319c00dce55d974b693898ee6cba5839@ec2-23-23-182-238.compute-1.amazonaws.com:5432/d871h2f5h0vkav'
 
 # /
 # Initialize the database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# /
-# Create Users DB class
+
+#################################
+# Create JSON Thing - for APIs 
+#################################
+@app.route('/API')
+def get_current_date():
+	favorite_pizza = {
+		"Date": date.today(),
+		"John": "Pepperoni",
+		"Mary": "Cheese",
+		"Tim": "Mushroom"
+	}
+	return favorite_pizza
+
+#################################
+# Create User DB Classes
+#################################
 class Users(db.Model): #inherit db.Model
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(20), nullable=False) #string of 200 characters and don't want the names to be blank
@@ -90,6 +111,13 @@ class NamerForm(FlaskForm):
 	name = StringField("What's your name homie? ", validators=[DataRequired()])
 	submit = SubmitField("Submit")
 
+
+# Create a Password Form Class
+class PasswordForm(FlaskForm):
+	email = StringField("What's your Email? ", validators=[DataRequired()])
+	password_hash = PasswordField("What's your Password? ", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
 #################################
 # create custom error pages
 #################################
@@ -103,6 +131,53 @@ def page_not_found(e):
 @app.errorhandler(500)
 def page_not_found(e):
 	return render_template("500.html"), 500
+
+#################################
+# Create a Blog Post Model
+#################################
+class Posts(db.Model): 
+	# remember to do a db migration
+	# in your terminal
+		# flask db migrate -m 'Add Posts Model'
+		# flask db upgrade
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(255))
+	content = db.Column(db.Text)
+	author = db.Column(db.String(255))
+	date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+	slug = db.Column(db.String(255)) # a name at the url/name
+
+# Create a Posts Form
+class PostForm(FlaskForm):
+	title = StringField("Title", validators=[DataRequired()])
+	content = StringField("Content", validators=[DataRequired()], widget=TextArea())
+	author = StringField("Author", validators=[DataRequired()])
+	slug = StringField("Slug", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+# Add Post Page
+@app.route('/add-post', methods=['GET', 'POST'])
+def add_post():
+	form = PostForm()
+
+	if form.validate_on_submit():
+		post = Posts(title=form.title.data, content=form.content.data, author=form.author.data, slug=form.slug.data)
+		
+		# Clear the form
+		form.title.data = ''
+		form.content.data = ''
+		form.author.data = ''
+		form.slug.data = ''
+
+		# Add posts data to database
+		db.session.add(post)
+		db.session.commit()
+
+		# Return a Message
+		flash("Blog Post Submitted Successfully!")
+
+	# Redirect to the webpage
+	return render_template("add_post.html", form=form)
 
 #################################
 # Create route decorators -- URLs
@@ -153,6 +228,39 @@ def name():
 		
 	return render_template("name.html",
 		name=name,
+		form=form)
+
+# /
+# Create Password Test Page
+@app.route('/test_pw', methods=['GET', 'POST'])
+# Everytime you have a form, you are either getting or posting that form
+def test_pw():
+	email = None
+	password = None
+	pw_to_check = None
+	passed = None
+	form = PasswordForm()
+
+	# Validate Form
+	if form.validate_on_submit():
+		email=form.email.data
+		password=form.password_hash.data
+		# Clear the form
+		form.email.data = ''
+		form.password_hash.data = ''
+		
+		# Lookup email by address
+		pw_to_check = Users.query.filter_by(email=email).first()
+
+		# Check Hashed Password
+		passed = check_password_hash(pw_to_check.password_hash, password)
+
+
+	return render_template("test_pw.html",
+		email=email,
+		password=password,
+		pw_to_check=pw_to_check,
+		passed = passed,
 		form=form)
 
 # /
