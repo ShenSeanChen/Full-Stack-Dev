@@ -8,7 +8,6 @@ from flask_migrate import Migrate
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 #################################
 # Create a Flask instance
 #################################
@@ -245,13 +244,4 @@ def delete(id):
 			name=name,
 			Users=Users,
 			our_users=our_users)
-
-
-
-
-
-
-
-
-
 
