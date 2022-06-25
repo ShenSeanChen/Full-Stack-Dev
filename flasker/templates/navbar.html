@@ -12,6 +12,12 @@
             <a class="nav-link" href="{{url_for('logout')}}"> Logout
             </a>
           </li>
+          {% if current_user.username == 'azuchan' %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('admin')}}"> Admin
+            </a>
+          </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('dashboard')}}"> Dashboard
             </a>
@@ -43,10 +49,13 @@
         </li>
 
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <form method="POST" action="{{ url_for('search')}}" class="d-flex">
+        {{ form.hidden_tag() }}
+        <input  class="form-control me-2" type="search" placeholder="Search" aria-label="Search"， name="searched">
         <button class="btn btn-secondary" type="submit">Search</button>
       </form>
+
+
     </div>
   </div>
 </nav>

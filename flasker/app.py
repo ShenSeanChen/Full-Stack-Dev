@@ -14,13 +14,21 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from datetime import datetime, date
 from numpy import record 
 
-from webforms import LoginForm, PostForm, UserForm, PasswordForm, NamerForm
+from webforms import LoginForm, PostForm, UserForm, PasswordForm, NamerForm, SearchForm
+
+from flask_ckeditor import CKEditor
+from flask_ckeditor import CKEditorField
+
 
 
 #################################
 # Create a Flask instance
 #################################
 app = Flask(__name__)
+
+# # set up ckeditor
+# app.config['CKEDITOR_PKG_TYPE'] = 'basic'
+ckeditor = CKEditor(app)
 
 # Set up Secret Key
 app.config['SECRET_KEY'] = "My super secret key that no one is supposed to know except Sean."
@@ -70,6 +78,25 @@ def get_current_date():
 # Create DB Classes
 #################################
 
+
+# /
+# Create a Blog Post Model
+class Posts(db.Model): 
+	# remember to do a db migration
+	# in your terminal
+		# flask db migrate -m 'Add Posts Model'
+		# flask db upgrade
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(255))
+	content = db.Column(db.Text)
+	# author = db.Column(db.String(255))
+	date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+	slug = db.Column(db.String(255)) # a name at the url/name
+
+	# Foreign key to link users (refer to primary key of the Users table)
+	poster_id = db.Column(db.Integer, db.ForeignKey('users.id')) #lower case u for users.id because our database is using lower case
+	
+
 # /
 # Create a User DB Class 
 class Users(db.Model, UserMixin): #inherit db.Model; UserMixin is important for login/logout
@@ -88,8 +115,11 @@ class Users(db.Model, UserMixin): #inherit db.Model; UserMixin is important for 
 	favorite_color = db.Column(db.String(120))
 	date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
+	# User can have many posts
+	posts = db.relationship('Posts', backref='poster') #capital P here is referring to the Posts(db.Model) class
+
 	# Password
-	password = db.Column(db.String(128))
+	# password = db.Column(db.String(128))
 	password_hash = db.Column(db.String(128))
 
 	@property
@@ -108,19 +138,6 @@ class Users(db.Model, UserMixin): #inherit db.Model; UserMixin is important for 
 		# return '<Name %r>' % self.name
 		return self.name
 
-# /
-# Create a Blog Post Model
-class Posts(db.Model): 
-	# remember to do a db migration
-	# in your terminal
-		# flask db migrate -m 'Add Posts Model'
-		# flask db upgrade
-	id = db.Column(db.Integer, primary_key=True)
-	title = db.Column(db.String(255))
-	content = db.Column(db.Text)
-	author = db.Column(db.String(255))
-	date_posted = db.Column(db.DateTime, default=datetime.utcnow)
-	slug = db.Column(db.String(255)) # a name at the url/name
 
 #################################
 # Flask_Login Stuff
@@ -182,6 +199,22 @@ def index():
 # jinja2 - auto installed when installing flask
 def user(input_name):
 	return render_template("user.html", user_name=input_name)
+
+# /
+# Create Admin Page
+@app.route('/admin') 
+@login_required
+# render a template: for index and user
+def admin():
+
+	admin_username = current_user.username
+	if admin_username == 'azuchan':
+	# id = current_user.id
+	# if id == 1:
+		return render_template('admin.html')
+	else:
+		flash("Sorry you have to be an admin to access the Admin page~~~")
+		return redirect(url_for('dashboard'))
 
 # /
 # Create Name Page
@@ -293,7 +326,9 @@ def update(id):
 		try:
 			db.session.commit()
 			flash("User Updated Successfully!")
-			current_user_posts = Posts.query.filter_by(author=current_user.username).order_by(Posts.date_posted.desc())
+			current_user_posts = Posts.query.filter_by(poster_id=current_user.id).order_by(Posts.date_posted.desc())
+
+			# current_user_posts = Posts.query.filter_by(poster_id=current_user.id)
 
 			has_posts = current_user_posts.first()
 			return render_template("dashboard.html",
@@ -337,7 +372,8 @@ def delete(id):
 				Users=Users,
 				our_users=our_users)
 		else:
-			flash("Whoops! This is not your post.....")
+			flash("Whoops! This is not your profile.....")
+			our_users = Users.query.order_by(Users.date_added)
 			return render_template("add_user.html",
 				form=form,
 				name=name,
@@ -384,7 +420,9 @@ def logout():
 @app.route('/dashboard', methods = ['GET', 'POST'])
 @login_required
 def dashboard():
-	current_user_posts = Posts.query.filter_by(author=current_user.username)
+	# current_user_posts = Posts.query.filter_by(author=current_user.username)
+
+	current_user_posts = Posts.query.filter_by(poster_id=current_user.id)
 	has_posts = current_user_posts.first()
 
 	form = UserForm()
@@ -433,10 +471,14 @@ def add_post():
 	form = PostForm()
 
 	if form.validate_on_submit():
-		post = Posts(title=form.title.data, content=form.content.data, 
-		author=current_user.username, 
-		# author=form.author.data,
-		slug=form.slug.data)
+
+		poster = current_user.id
+		post = Posts(title=form.title.data, 
+					content=form.content.data, 
+					poster_id=poster, #the foreign key we just set up in Posts class
+					# author=current_user.username, 
+					# author=form.author.data,
+					slug=form.slug.data)
 		
 		# Clear the form
 		form.title.data = ''
@@ -468,20 +510,28 @@ def posts():
 def delete_post(id):
 	post_to_delete = Posts.query.get_or_404(id)
 
-	try:
-		db.session.delete(post_to_delete)
-		db.session.commit()
+	id = current_user.id 
+	if id == post_to_delete.poster.id:
 
-		# return a message
-		flash("Hey, the blog post was deleted successfully!")
+		try:
+			db.session.delete(post_to_delete)
+			db.session.commit()
 
-		# Grab all the posts from before
-		# posts = Posts.query.order_by(Posts.date_posted.desc())
-		# return render_template("posts.html", posts=posts)
-		return redirect(url_for('posts'))
+			# return a message
+			flash("Hey, the blog post was deleted successfully!")
 
-	except:
-		flash("Oops! There was a problem deleting post...")
+			# Grab all the posts from before
+			# posts = Posts.query.order_by(Posts.date_posted.desc())
+			# return render_template("posts.html", posts=posts)
+			return redirect(url_for('posts'))
+
+		except:
+			flash("Oops! There was a problem deleting post...")
+			return redirect(url_for('posts'))
+
+	else:
+
+		flash("hey this is not your post~~")
 		return redirect(url_for('posts'))
 
 
@@ -512,11 +562,38 @@ def edit_post(id):
 		# return redirect(url_for('post', id=post.id))
 		return redirect(url_for('posts'))
 	
-	# Fill in the empty form with the previous post information
-	form.title.data = post.title
-	# form.author.data = post.author
-	# form.author.data = current_user.username
-	form.slug.data = post.slug
-	form.content.data = post.content
+	if current_user.id == post.poster_id:
+		# Fill in the empty form with the previous post information
+		form.title.data = post.title
+		# form.author.data = post.author
+		# form.author.data = current_user.username
+		form.slug.data = post.slug
+		form.content.data = post.content
 
-	return render_template('edit_post.html', form=form, id=id)
+		return render_template('edit_post.html', form=form, id=id, post=post)
+	
+	else:
+		flash("Yo, this is not your post~~~")
+		return redirect(url_for('posts'))
+	
+# Pass Stuff to Navbar
+@app.context_processor
+def base():
+	form = SearchForm()
+	return dict(form=form)
+
+# Create a search function
+@app.route('/search', methods=["POST"])
+def search():
+	form = SearchForm()
+	# search content
+	posts = Posts.query
+
+	if form.validate_on_submit():
+		# get data from submitted form
+		post.searched = form.searched.data
+		# Query the Database
+		posts = posts.filter(Posts.content.like('%'+post.searched+'%'))
+		posts = posts.order_by(Posts.title).all()
+
+		return render_template("search.html", form=form, searched=post.searched, posts=posts)

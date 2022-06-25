@@ -76,7 +76,11 @@ Here are the previous posts by {{current_user.name}} <br/><br/>
 {% for post in current_user_posts %}
 <div class="shadow p-3 mb-5 bg-body rounded">
     <h2>{{ post.title }} <br/> </h2>
-    By: {{ post.author }} <br/>
+    
+	<!-- By: {{ post.author }} <br/> -->
+	By: {{ post.poster.username }} <br/> 
+    <!-- using the backref 'poster' here to refer to any column in Users table within a post table -->
+
     <!-- {{ post.slug }} <br/> -->
     <small>Date: {{ post.date_posted }} </small> <br/>
     Content: {{ post.content }} <br/>

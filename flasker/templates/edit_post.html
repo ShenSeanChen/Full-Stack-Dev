@@ -14,7 +14,10 @@
 <br/> 
 
 
-{% if id == current_user.id %}
+<!-- By: {{ post.poster.username }} <br/>  -->
+<!-- using the backref 'poster' here to refer to any column in Users table within a post table -->
+
+{% if post.poster.username == current_user.username %}
 <div class="shadow p-3 mb-5 bg-body rounded">
     <form method = "POST">
         {{ form.hidden_tag() }}
@@ -31,10 +34,10 @@
         {{ form.content(class="form-control", rows="10") }}
         <br/>
 
-        {{ form.submit(class="btn btn-secondary") }}
-
-        
+        {{ form.submit(class="btn btn-secondary") }} 
     </form>
+    {{ ckeditor.load() }}
+    {{ ckeditor.config(name='content') }}
 </div>
 
 {% else %}

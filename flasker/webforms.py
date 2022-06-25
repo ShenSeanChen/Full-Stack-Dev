@@ -3,6 +3,10 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, Valid
 from wtforms.validators import DataRequired, EqualTo, Length
 from wtforms.widgets import TextArea
 
+from flask_ckeditor import CKEditor
+from flask_ckeditor import CKEditorField
+
+
 
 #################################
 # Create FlaskForm Classes
@@ -32,14 +36,20 @@ class PasswordForm(FlaskForm):
 
 # Create a Posts Form
 class PostForm(FlaskForm):
-	title = StringField("Title", validators=[DataRequired()])
-	content = StringField("Content", validators=[DataRequired()], widget=TextArea())
-	# author = StringField("Author", validators=[DataRequired()])
-	slug = StringField("Slug", validators=[DataRequired()])
-	submit = SubmitField("Submit")
+    title = StringField("Title", validators=[DataRequired()])
+    content = CKEditorField("Content", validators=[DataRequired()])
+    # content = StringField("Content", validators=[DataRequired()], widget=TextArea())
+    # author = StringField("Author", validators=[DataRequired()])
+    slug = StringField("Slug", validators=[DataRequired()])
+    submit = SubmitField("Submit")
 
 # Create Login Form
 class LoginForm(FlaskForm):
 	username = StringField("Username", validators=[DataRequired()])
 	password = PasswordField("Password", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+# Create a search form
+class SearchForm(FlaskForm):
+	searched = StringField("Searched", validators=[DataRequired()])
 	submit = SubmitField("Submit")
