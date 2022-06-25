@@ -9,45 +9,57 @@
 	</div>
 {% endfor %}
 
+{% if current_user.id != id %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    Sorry! This is not your profile so you can't edit it ;D
+</div>
+<a class="btn btn-primary" href="{{ url_for('add_user') }}" role="button">Register New User</a>
+<a class="btn btn-primary" href="{{ url_for('userbase') }}" role="button">Checkout UserBase</a>
 
-{% if name %}
-	<h1>Update User!</h1> 
-    <!-- Maybe it should be directed back to /add_user after clicking submit -->
-	<br/>
-	<table class="table table-hover table-bordered table-striped">
-	{% for our_user in our_users %}
-		<tr>
-		<td>{{our_user.id}}.{{ our_user.name}} - {{ our_user.email }} - {{ our_user.favorite_color}}
-		</td> 
-		</tr>
-	{% endfor %}
-	</table>
-    <a class="btn btn-primary" href="{{ url_for('add_user') }}" role="button">Back to User List</a>
+
 {% else %}
-	<h1>Update User...</h1>
+	{% if name %}
+		<h1>Update User!</h1> 
+		<!-- Maybe it should be directed back to /add_user after clicking submit -->
+		<br/>
+		<table class="table table-hover table-bordered table-striped">
+		{% for our_user in our_users %}
+			<tr>
+			<td>{{our_user.id}}.{{ our_user.name}} - {{ our_user.email }} - {{ our_user.favorite_color}}
+			</td> 
+			</tr>
+		{% endfor %}
+		</table>
+		<a class="btn btn-primary" href="{{ url_for('add_user') }}" role="button">Back to User List</a>
+	{% else %}
+		<h1>Update User...</h1>
+		<br/>
+		<div class="shadow p-3 mb-5 bg-body rounded">
+			<form action="/update/{{name_to_update.id }}" method = "POST">
+				{{ form.hidden_tag() }}
+
+				{{ form.name.label(class="form-label") }}
+				{{ form.name(class="form-control", value=name_to_update.name) }}
+
+				{{ form.username.label(class="form-label") }}
+				{{ form.username(class="form-control", value=name_to_update.username) }}
+
+				{{ form.email.label(class="form-label") }}
+				{{ form.email(class="form-control", value=name_to_update.email) }}
+
+				{{ form.favorite_color.label(class="form-label") }}
+				{{ form.favorite_color(class="form-control", value=name_to_update.favorite_color) }}
+				<br/>
+				{{ form.submit(class="btn btn-secondary") }}
+				<a href="{{url_for('delete', id=name_to_update.id)}}" class="btn btn-danger">Delete</a>
+			</form>
+		</div>
+		<a class="btn btn-primary" href="{{ url_for('add_user') }}" role="button">Register New User</a>
+		<a class="btn btn-primary" href="{{ url_for('userbase') }}" role="button">Checkout UserBase</a>
 	<br/>
-	<div class="shadow p-3 mb-5 bg-body rounded">
-		<form action="/update/{{name_to_update.id }}" method = "POST">
-			{{ form.hidden_tag() }}
+	{% endif %}
 
-			{{ form.name.label(class="form-label") }}
-			{{ form.name(class="form-control", value=name_to_update.name) }}
-
-			{{ form.email.label(class="form-label") }}
-			{{ form.email(class="form-control", value=name_to_update.email) }}
-
-            {{ form.favorite_color.label(class="form-label") }}
-			{{ form.favorite_color(class="form-control", value=name_to_update.favorite_color) }}
-			<br/>
-			{{ form.submit(class="btn btn-secondary") }}
-			<a href="{{url_for('delete', id=id)}}" class="btn btn-danger">Delete</a>
-		</form>
-	</div>
-    <a class="btn btn-primary" href="{{ url_for('add_user') }}" role="button">Back to User List</a>
-<br/>
 {% endif %}
-
-
 {% endblock %}
 
 

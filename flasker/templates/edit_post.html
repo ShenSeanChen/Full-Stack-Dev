@@ -13,16 +13,14 @@
 <H1>Blog Posts...</H1>
 <br/> 
 
+
+{% if id == current_user.id %}
 <div class="shadow p-3 mb-5 bg-body rounded">
     <form method = "POST">
         {{ form.hidden_tag() }}
 
         {{ form.title.label(class="form-label") }}
         {{ form.title(class="form-control") }}
-        <br/>
-
-        {{ form.author.label(class="form-label") }}
-        {{ form.author(class="form-control") }}
         <br/>
 
         {{ form.slug.label(class="form-label") }}
@@ -38,6 +36,16 @@
         
     </form>
 </div>
+
+{% else %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    Sorry! This is not your post so you can't edit it ;D
+
+</div>
+
+
+
+{% endif %}
 
 <a href="{{ url_for('posts') }}" class="btn btn-outline-secondary btn-sm">Back to Blog</a>
 

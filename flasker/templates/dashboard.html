@@ -10,12 +10,96 @@
 	</div>
 {% endfor %}
 
-<h1>Dahsboard</h1>
+<h1>Dashboard</h1>
 <br/><br/>
 <p>You are logged in!</p>
 <br/>
 
-<a href="{{url_for('logout')}}" class="btn btn-outline-secondary btn-sm">Logout</a>
+<!-- <h1>this is update status: {{update}}</h1>
+<h1>this is post status: {{has_posts}}</h1> -->
 
+<div class="card">
+	<div class="card-header">
+		{{ current_user.name}}'s Name Card
+	</div>
+	<div class="card-body">
+	  <h5 class="card-title">Welcome to your user dashboard!</h5>
+	  <p class="card-text"></p>
+	  <strong>Username:</strong> {{ current_user.username}} <br/>
+	  <strong>User Id:</strong> {{ current_user.id}} <br/>
+	  <strong>Email:</strong> {{ current_user.email}} <br/>
+	  <strong>Favorite Color:</strong> {{ current_user.favorite_color}} <br/>
+	  <strong>Date Joined:</strong> {{ current_user.date_added}} <br/><br/>
+
+	  <a href="{{url_for('update', id=current_user.id)}}" class="btn btn-secondary">Update Profile</a>
+	  <!-- <a href="{{url_for('dashboard', id=current_user.id, update=True)}}" class="btn btn-secondary">Update Profile</a> -->
+
+
+	  <a href="{{url_for('logout')}}" class="btn btn-secondary ">Logout</a>
+	  <a href="{{url_for('delete', id=current_user.id)}}" class="btn btn-danger">Delete</a>
+	  <a href="{{url_for('posts')}}" class="btn btn-outline-secondary ">Checkout All Posts</a>
+	  <a href="{{ url_for('add_post') }}" class="btn btn-outline-secondary">Add a Post</a>
+	</div>
+</div>
+<br/><br/>
+
+<div class="card-header">
+	Update Profile
+</div>
+<div class="card-body">
+	<div class="shadow p-3 mb-5 bg-body rounded">
+		<form action="/dashboard" method = "POST">
+			{{ form.hidden_tag() }}
+
+			{{ form.name.label(class="form-label") }}
+			{{ form.name(class="form-control", value=name_to_update.name) }}
+
+			{{ form.username.label(class="form-label") }}
+			{{ form.username(class="form-control", value=name_to_update.username) }}
+
+			{{ form.email.label(class="form-label") }}
+			{{ form.email(class="form-control", value=name_to_update.email) }}
+
+            {{ form.favorite_color.label(class="form-label") }}
+			{{ form.favorite_color(class="form-control", value=name_to_update.favorite_color) }}
+			<br/>
+			{{ form.submit(class="btn btn-secondary") }}
+			<!-- <a href="{{url_for('delete', id=name_to_update.id)}}" class="btn btn-danger">Delete</a> -->
+		</form>
+	</div>
+</div>
+
+<br/><br/>
+{% if has_posts %}
+Here are the previous posts by {{current_user.name}} <br/><br/>
+{% endif %}
+{% for post in current_user_posts %}
+<div class="shadow p-3 mb-5 bg-body rounded">
+    <h2>{{ post.title }} <br/> </h2>
+    By: {{ post.author }} <br/>
+    <!-- {{ post.slug }} <br/> -->
+    <small>Date: {{ post.date_posted }} </small> <br/>
+    Content: {{ post.content }} <br/>
+    <br/>
+    <a href="{{ url_for('post', id=post.id) }}" class="btn btn-outline-secondary">View Post</a>
+
+
+    <a href="{{ url_for('edit_post', id=post.id) }}" class="btn btn-outline-secondary">Edit Post</a>
+    <a href="{{ url_for('delete_post', id=post.id) }}" class="btn btn-outline-danger">Delete Post</a>
+</div>
+{% endfor %}
+
+<br/><br/>
+
+
+{% if current_user.username == 'shenseanchen' %}
+	<h1>Hello {{ name}} !</h1>
+	<br/>
+	<img src="{{ url_for('static', filename='images/GoogleTeamPhoto.png') }}",
+	width=800>
+	<br/><br/>
+	<p id="demo"> This is stuff... </p>
+<script src="{{ url_for('static', filename='js/myFile.js')}}"></script>
+{% endif %}
 
 {% endblock %}

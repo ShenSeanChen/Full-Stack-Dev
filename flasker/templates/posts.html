@@ -10,7 +10,7 @@
 	</div>
 {% endfor %}
 
-<H1>Blog Posts...</H1>
+<H1>Blog Posts...{{current_user.username}}</H1>
 <a href="{{ url_for('add_post') }}" class="btn btn-outline-secondary">Add a Post</a>
 <br/><br/> 
 
@@ -25,7 +25,9 @@
     <a href="{{ url_for('post', id=post.id) }}" class="btn btn-outline-secondary">View Post</a>
 
     <a href="{{ url_for('edit_post', id=post.id) }}" class="btn btn-outline-secondary">Edit Post</a>
+    {% if post.id == current_user.id %}
     <a href="{{ url_for('delete_post', id=post.id) }}" class="btn btn-outline-danger">Delete Post</a>
+    {% endif %}
 
 </div>
 

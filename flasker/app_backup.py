@@ -1,9 +1,9 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
 
-# from flask_wtf import FlaskForm
-# from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
-# from wtforms.validators import DataRequired, EqualTo, Length
-# from wtforms.widgets import TextArea
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
+from wtforms.validators import DataRequired, EqualTo, Length
+from wtforms.widgets import TextArea
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -13,8 +13,6 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 
 from datetime import datetime, date
 from numpy import record 
-
-from webforms import LoginForm, PostForm, UserForm, PasswordForm, NamerForm
 
 
 #################################
@@ -136,6 +134,47 @@ def load_user(user_id):
 
 
 #################################
+# Create FlaskForm Classes
+#################################
+
+# Create a User Form Class
+class UserForm(FlaskForm):
+	name = StringField("Name", validators=[DataRequired()])
+	username = StringField("Username", validators=[DataRequired()])
+	email = StringField("Email", validators=[DataRequired()])
+	favorite_color = StringField("Favorite Color")
+	password_hash = PasswordField('Password', validators=[DataRequired(), EqualTo('password_hash2', message='Passowrds Must Match!!!')])
+	password_hash2 = PasswordField('Confirm Password', validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+# Create a Namer Form Class
+class NamerForm(FlaskForm):
+	name = StringField("What's your name homie? ", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+
+# Create a Password Form Class
+class PasswordForm(FlaskForm):
+	email = StringField("What's your Email? ", validators=[DataRequired()])
+	password_hash = PasswordField("What's your Password? ", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+# Create a Posts Form
+class PostForm(FlaskForm):
+	title = StringField("Title", validators=[DataRequired()])
+	content = StringField("Content", validators=[DataRequired()], widget=TextArea())
+	author = StringField("Author", validators=[DataRequired()])
+	slug = StringField("Slug", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+# Create Login Form
+class LoginForm(FlaskForm):
+	username = StringField("Username", validators=[DataRequired()])
+	password = PasswordField("Password", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+
+#################################
 # create custom error pages
 #################################
 
@@ -174,7 +213,7 @@ def index():
 # /
 # Create a new name route
 # localhost:5000/user/sean -- the name is an input
-# @app.route('/user/<input_name>')
+@app.route('/user/<input_name>')
 
 # def user(name):
 # 	return "<h1>hello {}!!!</h1>".format(name)
@@ -281,7 +320,6 @@ def userbase():
 # /
 # Update Database record
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
-@login_required
 def update(id):
 	form = UserForm()
 	name_to_update = Users.query.get_or_404(id)
@@ -293,8 +331,7 @@ def update(id):
 		try:
 			db.session.commit()
 			flash("User Updated Successfully!")
-			current_user_posts = Posts.query.filter_by(author=current_user.username).order_by(Posts.date_posted.desc())
-
+			current_user_posts = Posts.query.filter_by(author=current_user.username)
 			has_posts = current_user_posts.first()
 			return render_template("dashboard.html",
 									form=form,
@@ -317,7 +354,6 @@ def update(id):
 # /
 # Delete Database records
 @app.route('/delete/<int:id>')
-@login_required
 def delete(id):
 	user_to_delete = Users.query.get_or_404(id)
 
@@ -325,24 +361,16 @@ def delete(id):
 	form=UserForm()
 
 	try:
-		if id == current_user.id:
-			db.session.delete(user_to_delete)
-			db.session.commit()
-			flash("User Deleted Success!!")
-			
-			our_users = Users.query.order_by(Users.date_added)	
-			return render_template("add_user.html",
-				form=form,
-				name=name,
-				Users=Users,
-				our_users=our_users)
-		else:
-			flash("Whoops! This is not your post.....")
-			return render_template("add_user.html",
-				form=form,
-				name=name,
-				Users=Users,
-				our_users=our_users)
+		db.session.delete(user_to_delete)
+		db.session.commit()
+		flash("User Deleted Success!!")
+		
+		our_users = Users.query.order_by(Users.date_added)	
+		return render_template("add_user.html",
+			form=form,
+			name=name,
+			Users=Users,
+			our_users=our_users)
 
 	except:
 		flash("Whoops! There was a problem deleting user, try again plzzzz......")
@@ -428,20 +456,17 @@ def dashboard():
 
 # Add Posts Page
 @app.route('/add-post', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def add_post():
 	form = PostForm()
 
 	if form.validate_on_submit():
-		post = Posts(title=form.title.data, content=form.content.data, 
-		author=current_user.username, 
-		# author=form.author.data,
-		slug=form.slug.data)
+		post = Posts(title=form.title.data, content=form.content.data, author=form.author.data, slug=form.slug.data)
 		
 		# Clear the form
 		form.title.data = ''
 		form.content.data = ''
-		# form.author.data = ''
+		form.author.data = ''
 		form.slug.data = ''
 
 		# Add posts data to database
@@ -500,7 +525,7 @@ def edit_post(id):
 
 	if form.validate_on_submit():
 		post.title = form.title.data
-		# post.author = form.author.data
+		post.author = form.author.data
 		post.slug = form.slug.data
 		post.content = form.content.data
 
@@ -514,9 +539,8 @@ def edit_post(id):
 	
 	# Fill in the empty form with the previous post information
 	form.title.data = post.title
-	# form.author.data = post.author
-	# form.author.data = current_user.username
+	form.author.data = post.author
 	form.slug.data = post.slug
 	form.content.data = post.content
 
-	return render_template('edit_post.html', form=form, id=id)
+	return render_template('edit_post.html', form=form)
