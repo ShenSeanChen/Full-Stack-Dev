@@ -6,29 +6,56 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+         
+        {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('logout')}}"> Logout
+            </a>
+          </li>
+          {% if current_user.username == 'azuchan' %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('admin')}}"> Admin
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('dashboard')}}"> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('userbase')}}"> UserBase
+            </a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('login')}}"> Login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('add_user', input_name='Sean')}}"> Register
+            </a>
+          </li>
+        {% endif %}
+
 
         <li class="nav-item">
-          <a class="nav-link" href="{{url_for('name')}}">
-          Name
+          <a class="nav-link" href="{{url_for('add_post')}}">Add Blog Post
           </a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="{{url_for('user', input_name='Sean')}}">User Profile
+          <a class="nav-link" href="{{url_for('posts')}}"> Posts
           </a>
         </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="{{url_for('add_user', input_name='Sean')}}">Add user
-          </a>
-        </li>
-
 
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <form method="POST" action="{{ url_for('search')}}" class="d-flex">
+        {{ form.hidden_tag() }}
+        <input  class="form-control me-2" type="search" placeholder="Search" aria-label="Search"， name="searched">
         <button class="btn btn-secondary" type="submit">Search</button>
       </form>
+
+
     </div>
   </div>
 </nav>
