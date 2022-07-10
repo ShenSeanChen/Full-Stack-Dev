@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useReducer } from 'react';
 import FunctionContextComponent from '../FunctionContextComponent';
 // import ClassContextComponent from '../ClassContextComponent';
 import {ThemeProvider} from '../ThemeContext'
@@ -135,9 +135,85 @@ export default function ReactHooks() {
     }
 
 
+    ////////
+    // useReducer: similar to redux
+    // Convert you current state to a new version of your state,
+    // based on the action you sent it
+    ////////
+
+    //////// Counter Example
+    const ACTIONS = {
+        INCREMENT: 'increment',
+        DECREMENT: 'decrement',
+        ADD_TODO: 'add-todo'
+    }
+
+    const [stateCounter, dispatchCounter] = useReducer(reducerCounter, {countReducer: 0})
+    // const [countReducer, setCountReducer] = useState(0)
+
+    function reducerCounter(stateCounter, action) {
+        switch (action.type) {
+            case ACTIONS.INCREMENT:
+                return {countReducer: stateCounter.countReducer + 1}
+            case ACTIONS.DECREMENT:
+                return {countReducer: stateCounter.countReducer - 1}
+            default:
+                return stateCounter
+        }
+        // return {countReducer: stateCounter.countReducer + 1}
+    }
+
+    function increment() {
+        // setCountReducer(prevCountReducer => prevCountReducer + 1)
+        dispatchCounter({type: ACTIONS.INCREMENT})
+    }
+
+    function decrement() {
+        // setCountReducer(prevCountReducer => prevCountReducer - 1)
+        dispatchCounter({type: ACTIONS.DECREMENT})
+    }
+
+    //////// Text Example
+    const [todos, dispatchText] = useReducer(reducerText, [])
+    const [nameText, setNameText] = useState('')
+
+    function newTodo(nameText) {
+        return {id: Date.now(), nameText:nameText, complete: false}
+    }
+
+    function reducerText(todos, action) {
+        switch (action.type) {
+            case ACTIONS.ADD_TODO:
+                return [...todos, newTodo(action.payload.nameText)]
+        }
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault()
+        dispatchText({type: ACTIONS.ADD_TODO, payload: {nameText:nameText}})
+        setNameText('')
+    }
+
+    console.log(todos)
+
     return (
         <>
             <h1>React Hooks</h1>
+
+            <h2>-- useReducer demo --</h2>
+                <h4> Counter </h4>
+                <button onClick={decrement}>-</button>
+                <span>{stateCounter.countReducer}</span>
+                <button onClick={increment}>+</button>
+
+                <h4> Text </h4>
+                <form onSubmit={handleSubmit}>
+                    <input type="text" value={nameText} onChange={e => setNameText(e.target.value)}/>
+                </form>
+
+            <br/><br/>
+
+
             <h2>-- useContext demo --</h2>
             <ThemeProvider>
             <FunctionContextComponent/>
