@@ -2,6 +2,16 @@ import React, { useState, useEffect, useMemo, useRef, useReducer } from 'react';
 import FunctionContextComponent from '../FunctionContextComponent';
 // import ClassContextComponent from '../ClassContextComponent';
 import {ThemeProvider} from '../ThemeContext'
+import Todo from '../Todo'
+
+
+export const ACTIONS = {
+    INCREMENT: 'increment',
+    DECREMENT: 'decrement',
+    ADD_TODO: 'add-todo',
+    TOGGLE_TODO: 'toggle-todo',
+    DELETE_TODO: 'delete-todo'
+}
 
 export default function ReactHooks() {
 
@@ -145,7 +155,9 @@ export default function ReactHooks() {
     const ACTIONS = {
         INCREMENT: 'increment',
         DECREMENT: 'decrement',
-        ADD_TODO: 'add-todo'
+        ADD_TODO: 'add-todo',
+        TOGGLE_TODO: 'toggle-todo',
+        DELETE_TODO: 'delete-todo'
     }
 
     const [stateCounter, dispatchCounter] = useReducer(reducerCounter, {countReducer: 0})
@@ -185,6 +197,18 @@ export default function ReactHooks() {
         switch (action.type) {
             case ACTIONS.ADD_TODO:
                 return [...todos, newTodo(action.payload.nameText)]
+            case ACTIONS.TOGGLE_TODO:
+                return todos.map(todo => {
+                    if (todo.id === action.payload.id) {
+                        return {...todo, complete: todo.complete}
+                    }
+                    return todo
+                })
+            case ACTIONS.DELETE_TODO:
+                return todos.filter(todo => todo.id !== action.payload.id)
+            default:
+                return todos
+
         }
     }
 
@@ -210,6 +234,9 @@ export default function ReactHooks() {
                 <form onSubmit={handleSubmit}>
                     <input type="text" value={nameText} onChange={e => setNameText(e.target.value)}/>
                 </form>
+                {todos.map(todo => {
+                    return <Todo key={todo.id} todo={todo} dispatch={dispatchText}/>
+                })}
 
             <br/><br/>
 

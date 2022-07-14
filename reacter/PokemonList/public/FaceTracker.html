@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <script defer src="../src/face-api.min.js"></script>
+        <script type="module" defer src="../src/pages/FaceTracker.js"></script>
+        <style>
+            body {
+                margin: 500px;
+                padding: 20px;
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                /* justify-content: center; */
+                align-items: center;
+            }
+
+            canvas {
+                position: absolute;
+                /* position: relative; */
+            }
+
+            input.defaultCheckbox {
+                width: 40px;
+                height: 40px;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <video id="video" width="720" height="560" autoplay muted></video> <br/>
+        <!-- <button onClick={}>Change FaceLandmark State</button>  -->
+        <input type="checkbox" class="defaultCheckbox" id="checkbox-facedetections" checked> <h3>FaceDetections</h3> 
+        <input type="checkbox" class="defaultCheckbox" id="checkbox-facelandmarks" checked> <h3>FaceLandMarks</h3>
+        <input type="checkbox" class="defaultCheckbox" id="checkbox-faceexpressions" checked> <h3>FaceExpressions</h3>
+        
+        <!-- Build an emotion tracking bot to tell me what percentage of the time of the day was I happy or sad -->
+
+    </body>
+    
+</html>

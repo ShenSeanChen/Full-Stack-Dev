@@ -9,6 +9,7 @@ export default function NavBar() {
                 {/* <li className="active"><a href="/reacthooks">React Hooks</a></li> */}
                 <CustomLink to="/pokemonlisttab">Pokemon List</CustomLink>
                 <CustomLink to="/calculator">Calculator</CustomLink>
+                <CustomLink to="/facetracker">Face Tracker</CustomLink>
             </ul>
         </nav>
     )

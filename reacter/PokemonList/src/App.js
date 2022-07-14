@@ -45,6 +45,7 @@ function App() {
           <Route path="/reacthooks" element={<ReactHooks/>} /> 
           <Route path="/pokemonlisttab" element={<PokemonListTab/>} />  
           <Route path="/calculator" element={<Calculator/>} />
+          <Route exact path="/facetracker" render={() => {window.location.href="../../public/FaceTracker.html"}}></Route>
 
         </Routes>
         

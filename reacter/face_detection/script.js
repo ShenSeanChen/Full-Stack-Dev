@@ -37,8 +37,6 @@ video.addEventListener('play', () => {
         // clear the canvas after we draw
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
 
-        
-        
         if (document.getElementById("checkbox-facedetections").checked)
         {faceapi.draw.drawDetections(canvas, resizedDetections)}
 
@@ -47,24 +45,7 @@ video.addEventListener('play', () => {
 
         if (document.getElementById("checkbox-faceexpressions").checked)
         {faceapi.draw.drawFaceExpressions(canvas, resizedDetections)}
-        
-
-
-        // const [faceLandmarksState, setFaceLandmarksState] = useState(false)
-
-        // function changeFaceLandmarks() {
-
-        //     if (faceLandmarksState = false) {return setFaceLandmarksState(true)}
-        //     if (faceLandmarksState = true) {return setFaceLandmarksState(False)}
-            // setCount(count - 1)
-            // setCount(prevCount => prevCount - 1)
-            // setState(prevState => {
-            //     return {...prevState, count: prevState.count - 1}
-            // })
-        
-            // }
-        
-        
+   
 
     }, 100)
 })
