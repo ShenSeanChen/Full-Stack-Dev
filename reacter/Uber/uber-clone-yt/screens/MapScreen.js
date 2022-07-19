@@ -3,24 +3,50 @@ import React from 'react'
 import tw from 'tailwind-react-native-classnames'
 import { Image } from 'react-native-elements'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { useNavigation } from '@react-navigation/native'
+import { StackActions, useNavigation } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Map from '../components/Map'
 import MapView from 'react-native-maps'
 
+import NavigateCard from '../components/NavigateCard'
+import RideOptionsCard from '../components/RideOptionsCard'
+
 export default function MapScreen() {
     const navigation = useNavigation();
+    const Stack = createNativeStackNavigator();
 
     return (
         <View>
-            {/* <Text style={tw`text-lg`}>Yo Yo Yo, let's take Azumi on a ride!!!</Text> */}
+
+            {/* First half of the screen: Maps */}
             <View style={tw`h-1/2`}>
                 <Map />
             </View>
-            <View style={tw`h-1/2`}></View>
+
+            {/* Second half of the screen: Uber Car Types  */}
+            <View style={tw`h-1/2`}>
+                <Stack.Navigator>
+                    <Stack.Screen
+                        name="NavigateCard"
+                        component={NavigateCard}
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="RideOptionsCard"
+                        component={RideOptionsCard}
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
+
+                </Stack.Navigator>
+            </View>
+
         </View>
         
-
 
         // <View style={tw`p-5`}>
         //             <TouchableOpacity 
@@ -42,5 +68,5 @@ export default function MapScreen() {
         //             </TouchableOpacity>
         //             <Text style={tw`text-lg`}>Yo Yo Yo, let's take Azumi on a ride!!!</Text>
         // </View>
-    )
-}
+    );
+};

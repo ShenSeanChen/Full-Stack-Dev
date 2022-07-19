@@ -8,6 +8,7 @@ import { GOOGLE_MAPS_APIKEY } from "@env";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import { setDestination, setOrigin } from '../slices/navSlice';
+import NavFavourites from '../components/NavFavourites';
 
 
 const HomeScreen = () => {
@@ -29,7 +30,7 @@ const HomeScreen = () => {
                 /> 
 
                 <GooglePlacesAutocomplete 
-                    placeholder="Where shall I take you on a ride to?"
+                    placeholder="Tell me where the journey begins :)"
                     styles={{
                         container: {
                             flex: 0,
@@ -65,6 +66,7 @@ const HomeScreen = () => {
                 />
                     
                 <NavOptions/> 
+                <NavFavourites />
                 
                 
 

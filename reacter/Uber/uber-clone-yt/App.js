@@ -1,6 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import {
-  AppRegistry, StyleSheet, Text, View, Button, Alert, SafeAreaView
+  AppRegistry, StyleSheet, Text, View, Button, Alert, SafeAreaView,
+  KeyboardAvoidingView, // to avoid keyboard blocking view
+  Platform
 } from 'react-native';
 import {Provider} from "react-redux";
 import HomeScreen from './screens/HomeScreen';
@@ -35,6 +37,7 @@ import MapScreen from './screens/MapScreen';
 // ---- create an .env file and paste your key there, remember to add env. in .gitignore
 // -- yarn add react-native-dotenv
 // -- yarn add react-native-maps
+// -- yarn add react-native-maps-directions
 
 
 export default function App() {
@@ -44,28 +47,37 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <SafeAreaProvider>
-          {/* <HomeScreen>I am the home screen</HomeScreen> */}
-          {/* <View style={styles.container}></View> */}
-          <Stack.Navigator>
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding" : "height"} 
+            style={{flex:1}}
+            keyboardVerticalOffset={Platform.OS === "ios" ? -64 : 0}
 
-            <Stack.Screen 
-              name='HomeScreen' 
-              component={HomeScreen} 
-              options={{
-                headerShown: false,
-              }}
-            />
-            
-            <Stack.Screen 
-              name='MapScreen' 
-              component={MapScreen} 
-              options={{
-                headerShown: false,
-              }}
-            />
+          >
 
+              {/* <HomeScreen>I am the home screen</HomeScreen> */}
+              {/* <View style={styles.container}></View> */}
+              <Stack.Navigator>
 
-          </Stack.Navigator>
+                  <Stack.Screen 
+                    name='HomeScreen' 
+                    component={HomeScreen} 
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+
+                  <Stack.Screen 
+                    name='MapScreen' 
+                    component={MapScreen} 
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+
+              </Stack.Navigator>
+
+          </KeyboardAvoidingView>
+          
         </SafeAreaProvider>
           
       </NavigationContainer>
