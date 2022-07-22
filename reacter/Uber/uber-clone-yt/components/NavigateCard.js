@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux'
 import { setDestination } from '../slices/navSlice'
 import { useNavigation } from '@react-navigation/native'
 import NavFavourites from './NavFavourites'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-elements'
 
 const NavigateCard = () => {
@@ -49,7 +49,9 @@ const NavigateCard = () => {
                 <NavFavourites />
             </View>
             
-            <View style={tw`flex-row bg-white justify-evenly py-3 mt-auto border-t border-gray-100`}>
+            <View 
+             style={tw`flex-row bg-white justify-evenly py-3 mt-auto border-t border-gray-100`}>
+            
                 <TouchableOpacity 
                     onPress={() => navigation.navigate("RideOptionsCard")}
                     style={tw`flex flex-row justify-between bg-black w-24 px-4 py-3 rounded-full`}
