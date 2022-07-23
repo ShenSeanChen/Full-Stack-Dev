@@ -1,8 +1,8 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import tw from 'tailwind-react-native-classnames'
-import { Image } from 'react-native-elements'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Icon, Image } from 'react-native-elements'
+import { TouchableOpacity } from 'react-native'
 import { StackActions, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -18,6 +18,12 @@ export default function MapScreen() {
 
     return (
         <View>
+
+            <TouchableOpacity 
+                onPress={() => navigation.navigate("HomeScreen")}
+                style={tw`bg-gray-100 absolute top-16 left-8 z-50 p-3 rounded-full shadow-lg`}>
+                <Icon name="menu" />
+            </TouchableOpacity>
 
             {/* First half of the screen: Maps */}
             <View style={tw`h-1/2`}>

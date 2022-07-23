@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView } from 'react-native'
 import tw from 'tailwind-react-native-classnames'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import {GOOGLE_MAPS_APIKEY} from "@env"
@@ -64,6 +64,7 @@ const NavigateCard = () => {
                     <Icon name="fast-food-outline" type="ionicon" color="black" size={16} />
                     <Text style={tw`text-center`}>Eats</Text>
                 </TouchableOpacity>
+                
             </View>
         </SafeAreaView>
     )

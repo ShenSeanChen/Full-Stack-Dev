@@ -38,6 +38,7 @@ import MapScreen from './screens/MapScreen';
 // -- yarn add react-native-dotenv
 // -- yarn add react-native-maps
 // -- yarn add react-native-maps-directions
+// -- yarn add react-intl
 
 
 export default function App() {
