@@ -1,7 +1,17 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useReducer } from 'react';
 import FunctionContextComponent from '../FunctionContextComponent';
 // import ClassContextComponent from '../ClassContextComponent';
 import {ThemeProvider} from '../ThemeContext'
+import Todo from '../Todo'
+
+
+export const ACTIONS = {
+    INCREMENT: 'increment',
+    DECREMENT: 'decrement',
+    ADD_TODO: 'add-todo',
+    TOGGLE_TODO: 'toggle-todo',
+    DELETE_TODO: 'delete-todo'
+}
 
 export default function ReactHooks() {
 
@@ -135,9 +145,102 @@ export default function ReactHooks() {
     }
 
 
+    ////////
+    // useReducer: similar to redux
+    // Convert you current state to a new version of your state,
+    // based on the action you sent it
+    ////////
+
+    //////// Counter Example
+    const ACTIONS = {
+        INCREMENT: 'increment',
+        DECREMENT: 'decrement',
+        ADD_TODO: 'add-todo',
+        TOGGLE_TODO: 'toggle-todo',
+        DELETE_TODO: 'delete-todo'
+    }
+
+    const [stateCounter, dispatchCounter] = useReducer(reducerCounter, {countReducer: 0})
+    // const [countReducer, setCountReducer] = useState(0)
+
+    function reducerCounter(stateCounter, action) {
+        switch (action.type) {
+            case ACTIONS.INCREMENT:
+                return {countReducer: stateCounter.countReducer + 1}
+            case ACTIONS.DECREMENT:
+                return {countReducer: stateCounter.countReducer - 1}
+            default:
+                return stateCounter
+        }
+        // return {countReducer: stateCounter.countReducer + 1}
+    }
+
+    function increment() {
+        // setCountReducer(prevCountReducer => prevCountReducer + 1)
+        dispatchCounter({type: ACTIONS.INCREMENT})
+    }
+
+    function decrement() {
+        // setCountReducer(prevCountReducer => prevCountReducer - 1)
+        dispatchCounter({type: ACTIONS.DECREMENT})
+    }
+
+    //////// Text Example
+    const [todos, dispatchText] = useReducer(reducerText, [])
+    const [nameText, setNameText] = useState('')
+
+    function newTodo(nameText) {
+        return {id: Date.now(), nameText:nameText, complete: false}
+    }
+
+    function reducerText(todos, action) {
+        switch (action.type) {
+            case ACTIONS.ADD_TODO:
+                return [...todos, newTodo(action.payload.nameText)]
+            case ACTIONS.TOGGLE_TODO:
+                return todos.map(todo => {
+                    if (todo.id === action.payload.id) {
+                        return {...todo, complete: todo.complete}
+                    }
+                    return todo
+                })
+            case ACTIONS.DELETE_TODO:
+                return todos.filter(todo => todo.id !== action.payload.id)
+            default:
+                return todos
+
+        }
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault()
+        dispatchText({type: ACTIONS.ADD_TODO, payload: {nameText:nameText}})
+        setNameText('')
+    }
+
+    console.log(todos)
+
     return (
         <>
             <h1>React Hooks</h1>
+
+            <h2>-- useReducer demo --</h2>
+                <h4> Counter </h4>
+                <button onClick={decrement}>-</button>
+                <span>{stateCounter.countReducer}</span>
+                <button onClick={increment}>+</button>
+
+                <h4> Text </h4>
+                <form onSubmit={handleSubmit}>
+                    <input type="text" value={nameText} onChange={e => setNameText(e.target.value)}/>
+                </form>
+                {todos.map(todo => {
+                    return <Todo key={todo.id} todo={todo} dispatch={dispatchText}/>
+                })}
+
+            <br/><br/>
+
+
             <h2>-- useContext demo --</h2>
             <ThemeProvider>
             <FunctionContextComponent/>
