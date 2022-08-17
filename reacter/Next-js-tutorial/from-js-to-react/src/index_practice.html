@@ -1,0 +1,49 @@
+<!-- index.html -->
+<html>
+  <body>
+    <div id="app"></div>
+
+    <!-- Loading `react` and `react-dom` scripts from unpkg.com  -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- Babel Script -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/jsx">
+      const app = document.getElementById('app');
+    
+      function Header(props) {
+        console.log(props)  
+        return <h1>{props.title ? props.title : "No title found"}</h1>
+       }
+
+    
+       function HomePage() {
+        const names = ["Azumi Kawaii", "Shen CHEN", "Rick & Morty"]
+        const [likes, setLikes] = React.useState(0);
+   
+       function handleClick() {
+         console.log("increment like count")
+         setLikes(likes + 1)
+         } 
+   
+       return (
+         <div>
+   
+           <Header title="React💙" />
+           <ul>
+           {names.map((name) => (
+             <li key={name}>{name}</li>
+           ))}
+           </ul>
+           <button onClick={handleClick}>Like</button> <text>{likes}</text>
+                 
+   
+         </div>
+       )
+       }
+    
+       ReactDOM.render(<HomePage />, app)
+    </script>
+  </body>
+</html>
