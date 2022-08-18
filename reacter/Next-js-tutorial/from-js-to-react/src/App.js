@@ -4,6 +4,7 @@ import React, {useState, useEffect} from 'react';
 // import ReactDOM from 'react-dom/client';
 import ReactFlexyTable from "react-flexy-table"
 import "react-flexy-table/dist/index.css"
+import reactFlexyTable from 'react-flexy-table';
 
 function App() {
 
@@ -180,3 +181,13 @@ function App() {
 
 export default App;
 
+// Future To-Dos
+// 1. connect the task data to a database, e.g. MySQL
+// 2. connect the app to a cloud, e.g. firebase (NoSQL) + gcloud
+// 3. create a navbar and routing in react.js
+// 4. use flask to manage the routing
+// 5. create a case using useEffect
+// 6. create a case using useReducer 
+// 7. query google APIs and present the results 
+// 8. get user data on firebase and create a dashboard to analyze it 
+// 9. create APIs with my apps (for other website to read from)
