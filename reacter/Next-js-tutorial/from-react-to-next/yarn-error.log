@@ -1,0 +1,34 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/Cellar/yarn/1.22.17/libexec/bin/yarn.js add react react-dom next
+
+PATH: 
+  /usr/local/git/current/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/mysql/bin:/opt/X11/bin:/Library/Apple/usr/bin
+
+Yarn version: 
+  1.22.17
+
+Node version: 
+  16.16.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  SyntaxError: /Users/shenseanchen/Desktop/Full-Stack-Dev/reacter/Next-js-tutorial/from-react-to-next/package.json: Unexpected token / in JSON at position 0
+      at JSON.parse (<anonymous>)
+      at /usr/local/Cellar/yarn/1.22.17/libexec/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.22.17/libexec/lib/cli.js:310:30)
+      at /usr/local/Cellar/yarn/1.22.17/libexec/lib/cli.js:321:13
+
+npm manifest: 
+  //package.json
+  {
+      
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
