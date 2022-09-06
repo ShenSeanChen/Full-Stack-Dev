@@ -18,7 +18,7 @@ import {HomeIcon} from '@heroicons/react/solid';
 // Main header function 
 function Header() {
   return (
-    <div>
+    <div className="shadow-sm border-b bg-white sticky top-0 z-50">
 
 	  {/* Top Head Bar Section */}
       <div className='flex justify-between bg-white mx-5 lg:mx-auto max-w-6xl '>
@@ -26,7 +26,7 @@ function Header() {
         {/* Left --- Logo of Instagram */}
 		
 			{/* Instagram Text: hidden unless it is large screen */}
-			<div className='relative hidden lg:inline-grid ml-1 p-2 w-24 cursor-pointer'
+			<div className='relative hidden lg:inline-grid ml-2 p-2 w-24 cursor-pointer'
 			// whenever we write in tailwind, everything is mobile first
 			>
 			<Image
@@ -41,7 +41,7 @@ function Header() {
 			</div>  
 
 			{/* Instagram Logo: hidden in large screen */}
-			<div className='relative w-10 ml-1 p-2 lg:hidden flex-shrink-0 cursor-pointer'>
+			<div className='relative w-10 m2-1 p-2 lg:hidden flex-shrink-0 cursor-pointer'>
 			<Image
 				src="https://links.papareact.com/jjm" 
 				layout='fill'
@@ -75,12 +75,36 @@ function Header() {
 
 
 	  	{/* Right --- Buttons!!! */}
-		<div className="flex mr-1 items-center justify-end space-x-4">
+		<div className="flex mr-2 items-center justify-end space-x-4">
 
 			<MenuIcon className="h-6 md:hidden cursor-pointer" />
 
 			<HomeIcon className="navBtn" />
-			<PaperAirplaneIcon className="navBtn"/>
+			<div className="relative navBtn">
+				<PaperAirplaneIcon className="navBtn rotate-45"/>
+				<div 
+					className="absolute -top-1 -right-2 text-xs 
+					w-5 h-5 bg-red-500 rounded-full 
+					flex items-center justify-center 
+					animate-pulse text-white">3</div>
+			</div>
+			
+			<PlusCircleIcon className="navBtn"/>
+			<UserGroupIcon className="navBtn"/>
+			<div className="relative navBtn">
+				<HeartIcon className="navBtn"/>
+				<div className="absolute -top-1 -right-1 text-xs w-5 h-5 
+							  bg-pink-300 rounded-full flex items-center justify-center
+							  animate-pulse text-gray-500">5</div>
+			</div>
+			
+
+			<img 
+				src="https://links.papareact.com/3ke" 
+				// src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia-exp1.licdn.com%2Fdms%2Fimage%2FC4E03AQHdafUD-c86xA%2Fprofile-displayphoto-shrink_200_200%2F0%2F1625974740375%3Fe%3D1657756800%26v%3Dbeta%26t%3DdRr0Hw_4Njr6rhJn6GxtuYgtEQlZHvI6P5WX9P1GwjA&imgrefurl=https%3A%2F%2Fwww.linkedin.com%2Fpub%2Fdir%2FShen%2B%2FChen%3Ftrk%3Dpublic_profile_samename-see-all&tbnid=UkdMzVzak7zQ7M&vet=12ahUKEwitpbiL2_v5AhVvg3IEHbqWB3kQMygOegQIARBS..i&docid=Y8HUEnF5rFRr_M&w=200&h=200&itg=1&q=sean%20chen%20shen&ved=2ahUKEwitpbiL2_v5AhVvg3IEHbqWB3kQMygOegQIARBS"				
+				alt="profile pic" 
+				className="h-8 rounded-full cursor-pointer"
+			/>
 			
 		</div>
 		
