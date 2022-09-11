@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {faker} from "@faker-js/faker";
 import Story from './Story'
+import { useSession } from 'next-auth/react';
 
 function Stories() {
-
+    const {data: session} = useSession(); 
     const [suggestions, setSuggestions] = useState([])
 
     // npm install --save-dev @faker-js/faker
@@ -32,15 +33,25 @@ function Stories() {
                     "
             // npm install --save-dev tailwind-scrollbar
         >
+
             {/* Story */}
-            {suggestions.map(profile => (
+            {session && 
+            (
+                <Story key={session.user.uid}
+                img={session.user.image} username={session.user.username}/>
+            )}
+
+            {session &&
+            (suggestions.map(profile => (
                 <Story 
                     key={profile.id} 
                     // Key is SUPER IMPORTANT!!!
                     img={profile.avatar} 
                     username={profile.username} 
                 />
-            ))}
+            )))}
+        
+            
             
         </div>
     );
