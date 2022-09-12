@@ -49,6 +49,7 @@ import Modal from "../components/Modal"
 // 17. Firebase: create a database (Build>FireStore Database) 
 //     --> Build>Storage>Rules (change if false to if true)
 //     --> Create uploadPost async function in modal.js
+// 18. npm i react-moment
 
 const Home: NextPage = () => {
   return (
