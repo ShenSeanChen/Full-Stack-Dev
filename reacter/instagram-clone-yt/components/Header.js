@@ -32,6 +32,13 @@ function Header() {
 //   console.log(modalState)
 
   const router = useRouter();
+  console.log(session)
+
+//   const getProfile = async (session) => {
+// 	if (session.user != null) {
+// 		return session.user.image
+// 	}
+//   }
 
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
@@ -125,6 +132,7 @@ function Header() {
 					<img 
 						onClick={signOut}
 						src={session?.user?.image}
+						// src={getProfile}
 						// src="https://lh3.googleusercontent.com/a-/AFdZucp9ioenVp32syMGC2Vx9_Fr5kKiYvrChwHn-2QQxA=s96-c"
 						// src="https://links.papareact.com/3ke" 
 						// src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia-exp1.licdn.com%2Fdms%2Fimage%2FC4E03AQHdafUD-c86xA%2Fprofile-displayphoto-shrink_200_200%2F0%2F1625974740375%3Fe%3D1657756800%26v%3Dbeta%26t%3DdRr0Hw_4Njr6rhJn6GxtuYgtEQlZHvI6P5WX9P1GwjA&imgrefurl=https%3A%2F%2Fwww.linkedin.com%2Fpub%2Fdir%2FShen%2B%2FChen%3Ftrk%3Dpublic_profile_samename-see-all&tbnid=UkdMzVzak7zQ7M&vet=12ahUKEwitpbiL2_v5AhVvg3IEHbqWB3kQMygOegQIARBS..i&docid=Y8HUEnF5rFRr_M&w=200&h=200&itg=1&q=sean%20chen%20shen&ved=2ahUKEwitpbiL2_v5AhVvg3IEHbqWB3kQMygOegQIARBS"				
