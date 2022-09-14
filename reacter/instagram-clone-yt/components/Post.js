@@ -26,9 +26,10 @@ function Post({ id, username, userImg, img, caption}) {
 
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
-  const commentRef = useRef(null);
+//   const commentRef = useRef(null);
 
   const [likes, setLikes] = useState([]);
+  const [hasLiked, setHasLiked] = useState(false);
 
   // Update Comments
   useEffect(
@@ -55,18 +56,24 @@ function Post({ id, username, userImg, img, caption}) {
   console.log(comments)
 
 
-  // Update likes and more!
-//   useEffect(() => onSnapshot(
-//     collection(db, 'posts', id, 'likes'), 
-//     (snapshot) => setLikes(snapshot.docs)
-//     ), [db, id])
+//   Update likes and more!
+  useEffect(() => onSnapshot(
+    collection(db, 'posts', id, 'likes'), 
+    (snapshot) => setLikes(snapshot.docs)
+    ), [db, id])
 
-//   const likePost = async () => {
-//     await setDoc(doc(db, 'posts', id, 'likes', session.user.uid), {
-//         username: session.user.username,
-//     })
-//   }
+  const likePost = async () => {
+    await setDoc(doc(db, 'posts', id, 'likes', session.user.uid), { 
+        // using user's id: session.user.uid to keep likes to be unique for each user
+        username: session.user.username,
+    })
+  }
 
+  console.log('likes: ', likes)
+
+  useEffect(() => {
+    setHasLiked(likes.findIndex(like => like.id === session?.user.uid !== -1 ))
+  }, [likes])
 
   return (
     <div className="bg-white my-7 border  rounded-sm">
@@ -89,7 +96,8 @@ function Post({ id, username, userImg, img, caption}) {
         {session && (
             <div className="flex justify-between items-center mt-2 mb-1 px-2">
                 <div className="flex space-x-4  ">
-                    <HeartIcon className="btn" />
+                    <HeartIcon onClick={likePost} className="btn" />
+                    {/* {likes[0]}  */}
                     <ChatIcon className="btn" />
                     <PaperAirplaneIcon className="btn"/>
                 </div>
