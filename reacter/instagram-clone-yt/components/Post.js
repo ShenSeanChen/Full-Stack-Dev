@@ -16,7 +16,7 @@ import {HomeIcon, HeartIcon as HeartIconFilled} from '@heroicons/react/solid';
 import { useSession } from 'next-auth/react';
 // ellipsis-horizontal
 import {db, storage} from "../firebase";
-import { addDoc, collection, serverTimestamp, updateDoc, doc, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, updateDoc, doc, onSnapshot, orderBy, query, setDoc, deleteDoc } from 'firebase/firestore';
 import {ref, getDownloadURL, uploadString, loading, setLoading} from "@firebase/storage";
 import Moment from "react-moment"
 
@@ -26,9 +26,15 @@ function Post({ id, username, userImg, img, caption}) {
 
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
-  const commentRef = useRef(null);
+//   const commentRef = useRef(null);
 
   const [likes, setLikes] = useState([]);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState([]);
+
+
+//   console.log('post user profile img: ', userImg)
+//   console.log('post user profile img trimmed: ', userImg)
 
   // Update Comments
   useEffect(
@@ -51,25 +57,51 @@ function Post({ id, username, userImg, img, caption}) {
     })
   }
 
-  console.log('recording comments!!!')
-  console.log(comments)
+//   console.log('recording comments!!!')
+//   console.log(comments)
+//   console.log(comments.length)
 
 
-  // Update likes and more!
-//   useEffect(() => onSnapshot(
-//     collection(db, 'posts', id, 'likes'), 
-//     (snapshot) => setLikes(snapshot.docs)
-//     ), [db, id])
+//   Update likes and more! --> set likes as latest snapshot.docs 
+  useEffect(() => onSnapshot(
+    collection(db, 'posts', id, 'likes'), 
+    (snapshot) => setLikes(snapshot.docs)
+    ), [db, id])
 
-//   const likePost = async () => {
-//     await setDoc(doc(db, 'posts', id, 'likes', session.user.uid), {
-//         username: session.user.username,
-//     })
-//   }
+  const likePost = async () => {
+    if (hasLiked) { // delete the unique user id if disliked it
+        await deleteDoc(doc(db, 'posts', id, 'likes', session.user.uid))
+    } else {
+        await setDoc(doc(db, 'posts', id, 'likes', session.user.uid), { 
+            // using user's id: session.user.uid to keep likes to be unique for each user
+            username: session.user.username,
+            timestamp: serverTimestamp(),
+        })
+    }
+  }
+//   console.log('likes: ', likes)
 
+  // Upldate likes --> check unique user id and set hasLiked
+  useEffect(() => {
+    setHasLiked(likes.findIndex(like => (like.id === session?.user?.uid)) !== -1 )
+  }, [likes])
+
+//   console.log('hasLiked', hasLiked)
+
+  // count likes
+  useEffect(
+    () => 
+    onSnapshot(
+        query(collection(db, 'posts', id, 'likes'), orderBy('timestamp', 'desc')), 
+        snapshot => setLikesCount(snapshot.docs)
+        ), [db, id])
+//   console.log('likes Count: ', likesCount)
+//   console.log('likes Count: ', likesCount.map((count) => count.data().username))
+
+//   console.log('userImg: ', userImg)
 
   return (
-    <div className="bg-white my-7 border  rounded-sm">
+    <div className="bg-white my-7 border  rounded-lg">
 
         {/* Header */}
         <div className="flex items-center p-2">
@@ -89,7 +121,8 @@ function Post({ id, username, userImg, img, caption}) {
         {session && (
             <div className="flex justify-between items-center mt-2 mb-1 px-2">
                 <div className="flex space-x-4  ">
-                    <HeartIcon className="btn" />
+                    <HeartIcon onClick={likePost} className={`btn ${hasLiked && "btn fill-red-300"}`} />
+                    {/* {likes[0]}  */}
                     <ChatIcon className="btn" />
                     <PaperAirplaneIcon className="btn"/>
                 </div>
@@ -97,6 +130,26 @@ function Post({ id, username, userImg, img, caption}) {
             </div>
         )}
         
+        {/* Likes */}
+        <div>
+            {session && (
+                <p className='px-3 pt-1 truncate'>
+                    <span className="font-bold"> {hasLiked ? "I Love it!" : "Nah, not so good."} </span>    
+                </p>
+            )}
+            
+            
+
+            {likes.length > 0 && (
+                <p className='px-3 pt-2 truncate text-gray-500 text-sm'>
+                <span>{likesCount.length} likes, by {likesCount.map(unique_like => unique_like.data().username).join(", ")}</span>
+                </p>
+            )}
+            
+            
+        </div>
+
+
         {/* Caption */}
         <div>
             <p className='px-3 py-1 truncate'>
@@ -133,7 +186,7 @@ function Post({ id, username, userImg, img, caption}) {
 
         {/* Comments */}
         {comments.length > 0 && (
-            <div className='pb-2 overflow-y-scroll scrollbar-thumb-black scrollbar-thin'>
+            <div className='pb-2 pl-2 overflow-y-scroll scrollbar-thumb-black scrollbar-thin'>
 
                 {comments.map(comment => (
                     // <main className='grid-cols-2'>
