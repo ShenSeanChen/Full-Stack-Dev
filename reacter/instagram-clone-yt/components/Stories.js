@@ -21,7 +21,7 @@ function Stories() {
             id: i,
         }));
 
-        console.log(suggestions);     
+        // console.log(suggestions);     
         setSuggestions(suggestions);   
     }, []);
 

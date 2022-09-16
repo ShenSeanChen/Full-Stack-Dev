@@ -45,8 +45,17 @@ function Posts() {
         return unsubscribe;
     }, [db])
 
-    console.log('recording posts')
-    console.log(posts)
+    // console.log('recording posts')
+    // console.log(posts)
+
+    // async function for loading profile Image
+    const profileImgFB = async (e) => {
+        await e.data().profileImg
+
+        // console.log('item source for profileImg', e)
+        // console.log('profileImg: ', e.data().profileImg)
+        return e.data().profileImg
+      }
 
     if (posts != null) {
         return (
@@ -61,7 +70,9 @@ function Posts() {
                 {posts.map((post) => (
                     <Post key={post.id} id={post.id}
                     username={post.data().username} 
+                    // userImg={post ? post.data().profileImg : ""}
                     userImg={post.data().profileImg}
+                    // userImg={profileImgFB(post).then(function(response){return response})}
                     img={post.data().image} 
                     caption={post.data().caption}
                     // comments={post.data().comments}

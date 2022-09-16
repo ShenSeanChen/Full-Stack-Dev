@@ -40,7 +40,7 @@ function Modal() {
             profileImg: session.user.image,
             timestamp: serverTimestamp()
         })
-        console.log("New doc added with ID", docRef.id);
+        // console.log("New doc added with ID", docRef.id);
 
         // 2) get the post ID for the newly created post
         // This will be a firebase storage and we are organizing it in a nice way

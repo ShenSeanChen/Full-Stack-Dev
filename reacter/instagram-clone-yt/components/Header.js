@@ -32,7 +32,8 @@ function Header() {
 //   console.log(modalState)
 
   const router = useRouter();
-  console.log(session)
+//   console.log(session)
+//   console.log('session.user.image: ', session?.user?.image)
 
 //   const getProfile = async (session) => {
 // 	if (session.user != null) {
@@ -132,6 +133,7 @@ function Header() {
 					<img 
 						onClick={signOut}
 						src={session?.user?.image}
+						// src="https://lh3.googleusercontent.com/a/AItbvmlrshufbStw5Lm75OfyiTMDVYmPTg8Kl1JmftjhtQ=s96-c"
 						// src={getProfile}
 						// src="https://lh3.googleusercontent.com/a-/AFdZucp9ioenVp32syMGC2Vx9_Fr5kKiYvrChwHn-2QQxA=s96-c"
 						// src="https://links.papareact.com/3ke" 
