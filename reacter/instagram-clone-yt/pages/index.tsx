@@ -50,6 +50,7 @@ import Modal from "../components/Modal"
 //     --> Build>Storage>Rules (change if false to if true)
 //     --> Create uploadPost async function in modal.js
 // 18. npm i react-moment
+// 19. final thing - git - create a new repo and copy-paste: git remote add origin git@github.com:ShenSeanChen/insta-deploy.git
 
 const Home: NextPage = () => {
   return (
