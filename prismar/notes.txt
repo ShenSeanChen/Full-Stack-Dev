@@ -1,0 +1,5 @@
+sudo npm i -g prisma
+npm i @prisma/client
+npx prisma init
+prisma generate
+npx ts-node index.ts
