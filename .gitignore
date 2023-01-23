@@ -2,3 +2,5 @@
 appengine-generated/
 
 reacter/node_modules/
+prisma/node_modules/
+mongoDBer/node_modules/
